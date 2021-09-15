@@ -6,7 +6,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta property="og:title" content="{% trans 'NiceDB - 登录' %}">
+    <meta property="og:title" content="{{ site_name }} - {% trans '登录' %}">
     <meta property="og:type" content="website">
     <meta property="og:url" content="{{ request.build_absolute_uri }}">
     <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo_square.jpg' %}">
@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{% static 'css/boofilsic_box.css' %}">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{% static 'lib/js/js.cookie.min.js' %}"></script>
-    <title>{% trans 'NiceDB - 登录' %}</title>
+    <title>{{ site_name }} - {% trans '登录' %}</title>
 </head>
 <body>
     <style>
@@ -35,6 +35,11 @@
             
             {% if user.is_authenticated %}
             <a href="{% url 'common:home' %}" class="button">{% trans '前往我的主页' %}</a>
+            {% elif allow_any_site %}
+            <form action="/users/connect" onsubmit="return /^(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})$/.test($('#domain').val())">
+            <input type="search" name="domain" id="domain" placeholder="实例地址，如mastodon.social (不含@)" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" />
+            <input type='submit' value="{% trans '授权登录' %}" />
+            </form>
             {% else %}            
             <select name="sites" id="sitesSelect" placeholder="test">
                 {% for site in sites %}
@@ -47,7 +52,7 @@
         </div>
 
     </div>
-    {% if not user.is_authenticated %}
+    {% if not user.is_authenticated and not allow_any_site %}
     
     
     <script>

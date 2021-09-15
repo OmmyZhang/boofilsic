@@ -3,18 +3,25 @@ import django.contrib.postgres.fields as postgres
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from boofilsic.settings import REPORT_MEDIA_PATH_ROOT, DEFAULT_PASSWORD
 from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.translation import ugettext_lazy as _
 from common.utils import GenerateDateUUIDMediaFilePath
+from django.conf import settings
 
 
 def report_image_path(instance, filename):
-    return GenerateDateUUIDMediaFilePath(instance, filename, REPORT_MEDIA_PATH_ROOT)
+    return GenerateDateUUIDMediaFilePath(instance, filename, settings.REPORT_MEDIA_PATH_ROOT)
 
 
 class User(AbstractUser):
-    mastodon_id = models.IntegerField(blank=False)
+    if settings.MASTODON_ALLOW_ANY_SITE:
+        username = models.CharField(
+            _('username'),
+            max_length=150,
+            unique=False,
+            help_text=_('Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.'),
+        )
+    mastodon_id = models.CharField(max_length=100, blank=False)
     # mastodon domain name, eg donotban.com
     mastodon_site = models.CharField(max_length=100, blank=False)
     # store the latest read announcement id, 
@@ -28,8 +35,8 @@ class User(AbstractUser):
         ]
 
     def save(self, *args, **kwargs):
-        """ Automatically populate password field with DEFAULT_PASSWORD before saving."""
-        self.set_password(DEFAULT_PASSWORD)
+        """ Automatically populate password field with settings.DEFAULT_PASSWORD before saving."""
+        self.set_password(settings.DEFAULT_PASSWORD)
         return super().save(*args, **kwargs)
 
     def __str__(self):

@@ -3,9 +3,8 @@ import string
 import random
 import functools
 from django.core.exceptions import ObjectDoesNotExist
-from boofilsic.settings import MASTODON_TIMEOUT
-from boofilsic.settings import CLIENT_NAME, APP_WEBSITE, REDIRECT_URIS
 from .models import CrossSiteUserInfo
+from django.conf import settings
 
 # See https://docs.joinmastodon.org/methods/accounts/
 
@@ -47,8 +46,8 @@ API_CREATE_APP = '/api/v1/apps'
 API_SEARCH = '/api/v2/search'
 
 
-get = functools.partial(requests.get, timeout=MASTODON_TIMEOUT)
-post = functools.partial(requests.post, timeout=MASTODON_TIMEOUT)
+get = functools.partial(requests.get, timeout=settings.MASTODON_TIMEOUT)
+post = functools.partial(requests.post, timeout=settings.MASTODON_TIMEOUT)
 
 
 # low level api below
@@ -58,7 +57,7 @@ def get_relationships(site, id_list, token):
     headers = {
         'Authorization': f'Bearer {token}'
     }
-    response = get(url, headers=headers, data=payload)
+    response = get(url, headers=headers, params=payload)
     return response.json()
 
 
@@ -96,14 +95,13 @@ def create_app(domain_name):
         url = 'http://' + domain_name + API_CREATE_APP
 
     payload = {
-        'client_name': CLIENT_NAME,
+        'client_name': settings.CLIENT_NAME,
         'scopes': 'read write follow',
-        'redirect_uris': REDIRECT_URIS,
-        'website': APP_WEBSITE
+        'redirect_uris': settings.REDIRECT_URIS,
+        'website': settings.APP_WEBSITE
     }
 
-    from boofilsic.settings import DEBUG
-    if DEBUG:
+    if settings.DEBUG:
         payload['redirect_uris'] = 'http://localhost/users/OAuth2_login/\nurn:ietf:wg:oauth:2.0:oob'
         payload['client_name'] = 'test_do_not_authorise'
 
@@ -121,7 +119,7 @@ def get_site_id(username, user_site, target_site, token):
     headers = {
         'Authorization': f'Bearer {token}'
     }
-    response = get(url, data=payload, headers=headers)
+    response = get(url, params=payload, headers=headers)
     data = response.json()
     if not data['accounts']:
         return None

@@ -16,6 +16,8 @@ import psycopg2.extensions
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# https://docs.djangoproject.com/en/3.2/releases/3.2/#customizing-type-of-auto-created-primary-keys
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     'movies.apps.MoviesConfig',
     'music.apps.MusicConfig',
     'games.apps.GamesConfig',
+    # 'sync.apps.SyncConfig',
     'easy_thumbnails',
 ]
 
@@ -80,6 +83,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'boofilsic.context_processors.site_info',
             ],
         },
     },
@@ -187,6 +191,8 @@ AUTH_USER_MODEL = 'users.User'
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 
+SITE_INFO = {'site_name': 'NeoDB', 'support_link': 'https://github.com/doubaniux/boofilsic/issues'}
+
 # Mastodon configs
 CLIENT_NAME = 'NiceDB'
 APP_WEBSITE = 'https://nicedb.org'
@@ -205,6 +211,10 @@ ALBUM_MEDIA_PATH_ROOT = 'album/'
 DEFAULT_ALBUM_IMAGE = os.path.join(ALBUM_MEDIA_PATH_ROOT, 'default.svg')
 GAME_MEDIA_PATH_ROOT = 'game/'
 DEFAULT_GAME_IMAGE = os.path.join(GAME_MEDIA_PATH_ROOT, 'default.svg')
+SYNC_FILE_PATH_ROOT = 'sync/'
+
+# Allow user to login via any Mastodon/Pleroma sites
+MASTODON_ALLOW_ANY_SITE = False
 
 # Timeout of requests to Mastodon, in seconds
 MASTODON_TIMEOUT = 30
@@ -217,7 +227,7 @@ STAR_SOLID = ':star_solid:'
 STAR_HALF = ':star_half:'
 STAR_EMPTY = ':star_empty:'
 
-# Default password for each user. since assword is not used any way,
+# Default password for each user. since password is not used any way,
 # any string that is not empty is ok
 DEFAULT_PASSWORD = 'ab7nsm8didusbaqPgq'
 
@@ -257,3 +267,5 @@ if DEBUG:
 
 # https://django-debug-toolbar.readthedocs.io/en/latest/
 # maybe benchmarking before deployment
+
+START_SYNC = True
