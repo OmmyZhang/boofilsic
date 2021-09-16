@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'movies.apps.MoviesConfig',
     'music.apps.MusicConfig',
     'games.apps.GamesConfig',
-    # 'sync.apps.SyncConfig',
+    'sync.apps.SyncConfig',
     'easy_thumbnails',
 ]
 
@@ -99,15 +99,15 @@ if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'test',
-            'USER': 'donotban',
-            'PASSWORD': 'donotbansilvousplait',
-            'HOST': '172.18.116.29',
+            'NAME': 'neodb_dev',
+            'USER': 'neodb',
+            'PASSWORD': 'password',
+            'HOST': '127.0.0.1',
             'OPTIONS': {
                 'client_encoding': 'UTF8',
                 # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
             }
-        }    
+        }
     }
 else:
     DATABASES = {
@@ -121,7 +121,7 @@ else:
                 'client_encoding': 'UTF8',
                 # 'isolation_level': psycopg2.extensions.ISOLATION_LEVEL_DEFAULT,
             }
-        }    
+        } 
     }
 
 # Customized auth backend, glue OAuth2 and Django User model together
@@ -194,9 +194,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 SITE_INFO = {'site_name': 'NeoDB', 'support_link': 'https://github.com/doubaniux/boofilsic/issues'}
 
 # Mastodon configs
-CLIENT_NAME = 'NiceDB'
-APP_WEBSITE = 'https://nicedb.org'
-REDIRECT_URIS = "https://nicedb.org/users/OAuth2_login/\nhttps://www.nicedb.org/users/OAuth2_login/"
+CLIENT_NAME = 'NeoDB'
+APP_WEBSITE = 'https://neodb.social'
+REDIRECT_URIS = "https://neodb.social/users/OAuth2_login/\nhttps://www.neodb.social/users/OAuth2_login/"
 
 # Path to save report related images, ends with slash
 REPORT_MEDIA_PATH_ROOT = 'report/'
@@ -214,13 +214,13 @@ DEFAULT_GAME_IMAGE = os.path.join(GAME_MEDIA_PATH_ROOT, 'default.svg')
 SYNC_FILE_PATH_ROOT = 'sync/'
 
 # Allow user to login via any Mastodon/Pleroma sites
-MASTODON_ALLOW_ANY_SITE = False
+MASTODON_ALLOW_ANY_SITE = True
 
 # Timeout of requests to Mastodon, in seconds
 MASTODON_TIMEOUT = 30
 
 # Tags for toots posted from this site
-MASTODON_TAGS = '#NiceDB #NiceDB%(category)s #NiceDB%(category)s%(type)s'
+MASTODON_TAGS = '#NeoDB #NeoDB%(category)s #NeoDB%(category)s%(type)s'
 
 # Emoji code in mastodon
 STAR_SOLID = ':star_solid:'
@@ -268,4 +268,4 @@ if DEBUG:
 # https://django-debug-toolbar.readthedocs.io/en/latest/
 # maybe benchmarking before deployment
 
-START_SYNC = True
+START_SYNC = False

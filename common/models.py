@@ -160,14 +160,17 @@ class UserOwnedEntity(models.Model):
         # TODO add amount limit for once query
         """ 
         Returns all avaliable user-owned entities related to given entity. 
-        This method handles mute/block relationships and private/public visibilities.
+        This method no longer handles mute/block relationships and private/public visibilities.
         """
         # the foreign key field that points to entity
         # has to be named as the lower case name of that entity
         query_kwargs = {entity.__class__.__name__.lower(): entity}
         user_owned_entities = cls.objects.filter(
             **query_kwargs).order_by("-edited_time")
-
+        
+        return list(filter(lambda e: not e.is_private, user_owned_entities))
+        
+        '''
         # every user should only be abled to have one user owned entity for each entity
         # this is guaranteed by models
         id_list = []
@@ -209,6 +212,7 @@ class UserOwnedEntity(models.Model):
                     and not i in mute_block_blocked_index and not i in none_index
         ]
         return available_entities
+        '''
 
     @classmethod
     def get_available_by_user(cls, owner, is_following):

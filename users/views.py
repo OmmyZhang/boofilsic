@@ -96,7 +96,8 @@ def login(request):
         return HttpResponseBadRequest()
 
 def connect(request):
-    domain = request.GET.get('domain').strip().lower()
+    domain = request.POST.get('domain').strip().lower()
+    allow_write = request.POST.get('write') == 'on'
     app = MastodonApplication.objects.filter(domain_name=domain).first()
     if app is None:
         try:
@@ -122,7 +123,7 @@ def connect(request):
                 }
             )
     else:
-        login_url = "https://" + domain + "/oauth/authorize?client_id=" + app.client_id + "&scope=read+write&redirect_uri=" + request.scheme + "://" + request.get_host() + reverse('users:OAuth2_login') + "&response_type=code"
+        login_url = "https://" + domain + "/oauth/authorize?client_id=" + app.client_id + "&scope=read:accounts" + ("+write:statuses" if allow_write else "") + "&redirect_uri=" + request.scheme + "://" + request.get_host() + reverse('users:OAuth2_login') + "&response_type=code"
         resp = redirect(login_url)
         resp.set_cookie("mastodon_domain", domain)
         return resp

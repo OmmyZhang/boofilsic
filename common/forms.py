@@ -228,7 +228,7 @@ class DurationField(forms.TimeField):
 
 class MarkForm(forms.ModelForm):
     IS_PRIVATE_CHOICES = [
-        (True, _("仅关注者")),
+        (True, _("私密")),
         (False, _("公开")),
     ]
     
@@ -261,7 +261,7 @@ class MarkForm(forms.ModelForm):
 
 class ReviewForm(forms.ModelForm):
     IS_PRIVATE_CHOICES = [
-        (True, _("仅关注者")),
+        (True, _("私密")),
         (False, _("公开")),
     ]
     share_to_mastodon = forms.BooleanField(

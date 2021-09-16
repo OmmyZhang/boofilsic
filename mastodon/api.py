@@ -5,6 +5,7 @@ import functools
 from django.core.exceptions import ObjectDoesNotExist
 from .models import CrossSiteUserInfo
 from django.conf import settings
+from django.shortcuts import redirect
 
 # See https://docs.joinmastodon.org/methods/accounts/
 
@@ -75,6 +76,8 @@ def post_toot(site, content, visibility, token, local_only=False):
     if not local_only:
         del payload['local_only']
     response = post(url, headers=headers, data=payload)
+    if response.status_code == 403:
+        return redirect(f"https://{site}/share?text={content}&visibility={visibility}")
     return response
 
 
@@ -96,14 +99,14 @@ def create_app(domain_name):
 
     payload = {
         'client_name': settings.CLIENT_NAME,
-        'scopes': 'read write follow',
+        'scopes': 'read:accounts write:statuses',
         'redirect_uris': settings.REDIRECT_URIS,
         'website': settings.APP_WEBSITE
     }
 
     if settings.DEBUG:
-        payload['redirect_uris'] = 'http://localhost/users/OAuth2_login/\nurn:ietf:wg:oauth:2.0:oob'
-        payload['client_name'] = 'test_do_not_authorise'
+        payload['redirect_uris'] = 'http://localhost:8000/users/OAuth2_login/\nurn:ietf:wg:oauth:2.0:oob'
+        payload['client_name'] = 'test'
 
     response = post(url, data=payload)
     return response

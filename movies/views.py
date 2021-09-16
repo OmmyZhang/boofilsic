@@ -321,6 +321,8 @@ def create_update_mark(request):
                     form.cleaned_data['text'] + '\n' + tags
                 response = post_toot(request.user.mastodon_site, content, visibility,
                                      request.session['oauth_token'])
+                if response.status_code == 302:
+                    return response
                 if response.status_code != 200:
                     mastodon_logger.error(
                         f"CODE:{response.status_code} {response.text}")
@@ -413,6 +415,8 @@ def create_review(request, movie_id):
                     '\n' + form.cleaned_data['title'] + '\n' + tags
                 response = post_toot(request.user.mastodon_site, content, visibility,
                                      request.session['oauth_token'])
+                if response.status_code == 302:
+                    return response
                 if response.status_code != 200:
                     mastodon_logger.error(
                         f"CODE:{response.status_code} {response.text}")
@@ -465,6 +469,8 @@ def update_review(request, id):
                     '\n' + form.cleaned_data['title'] + '\n' + tags
                 response = post_toot(request.user.mastodon_site, content, visibility,
                                      request.session['oauth_token'])
+                if response.status_code == 302:
+                    return response
                 if response.status_code != 200:
                     mastodon_logger.error(
                         f"CODE:{response.status_code} {response.text}")
